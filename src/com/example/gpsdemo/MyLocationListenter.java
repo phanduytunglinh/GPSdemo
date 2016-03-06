@@ -28,13 +28,8 @@ public class MyLocationListenter implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location currentlocation) {
-		if (lastLocation != null){
-			if (isBetterLocation(currentlocation, lastLocation)){
-				updateLocationDataToView(currentlocation);
-			}
-		} else {
+		if (isBetterLocation(currentlocation, lastLocation))
 			updateLocationDataToView(currentlocation);
-		}
 		lastLocation = currentlocation;
 	}
 
@@ -59,14 +54,14 @@ public class MyLocationListenter implements LocationListener {
 
 	}
 	
-	private boolean isBetterLocation(Location location, Location currentBestLocation) {
-	    if (currentBestLocation == null) {
+	private boolean isBetterLocation(Location location1, Location location2) {
+	    if (location2 == null) {
 	        // A new location is always better than no location
 	        return true;
 	    }
 
 	    // Check whether the new location fix is newer or older
-	    long timeDelta = location.getTime() - currentBestLocation.getTime();
+	    long timeDelta = location1.getTime() - location2.getTime();
 	    boolean isSignificantlyNewer = timeDelta > MainActivity.minTimeInMS;
 	    boolean isSignificantlyOlder = timeDelta < -MainActivity.minTimeInMS;
 	    boolean isNewer = timeDelta > 0;
@@ -81,14 +76,14 @@ public class MyLocationListenter implements LocationListener {
 	    }
 
 	    // Check whether the new location fix is more or less accurate
-	    int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+	    int accuracyDelta = (int) (location1.getAccuracy() - location2.getAccuracy());
 	    boolean isLessAccurate = accuracyDelta > 0;
 	    boolean isMoreAccurate = accuracyDelta < 0;
 	    boolean isSignificantlyLessAccurate = accuracyDelta > 200;
 
 	    // Check if the old and new location are from the same provider
-	    boolean isFromSameProvider = isSameProvider(location.getProvider(),
-	            currentBestLocation.getProvider());
+	    boolean isFromSameProvider = isSameProvider(location1.getProvider(),
+	            location2.getProvider());
 
 	    // Determine location quality using a combination of timeliness and accuracy
 	    if (isMoreAccurate) {
